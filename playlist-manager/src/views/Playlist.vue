@@ -47,7 +47,16 @@
       <!-- Songs section header with search and add button -->
       <div class="songs-header">
         <SearchBar v-model="searchQuery" />
-        <button class="add-song-btn" @click="openAddSongModal">
+        <button
+          class="add-song-btn"
+          @click.prevent="openAddSongModal"
+          :disabled="!playlist.id"
+          :title="
+            !playlist.id
+              ? 'Playlist not found'
+              : 'Add a new song to this playlist'
+          "
+        >
           + Add Song
         </button>
       </div>
@@ -83,7 +92,7 @@
 
     <!-- Add Song Modal -->
     <AddSongModal
-      v-if="showAddSongModal"
+      v-if="showAddSongModal && playlist.id"
       :playlistId="playlistId"
       @save="handleAddSong"
       @close="closeAddSongModal"
@@ -135,7 +144,9 @@ export default {
      * @returns {Object} Playlist object or empty object if not found
      */
     playlist() {
-      return this.playlists.find((p) => p.id === this.playlistId) || {};
+      return (
+        this.playlists.find((p) => p.id === parseInt(this.playlistId)) || {}
+      );
     },
 
     /**
@@ -205,15 +216,26 @@ export default {
     /**
      * Opens the modal for adding a new song
      */
-    openAddSongModal() {
+    async openAddSongModal() {
+      // Check if playlist exists
+      if (!this.playlist.id) {
+        console.error("Cannot add song: Playlist not found");
+        // TODO: Add user-friendly error notification
+        return;
+      }
+
+      // Use nextTick to ensure DOM is ready
+      await this.$nextTick();
       this.showAddSongModal = true;
     },
 
     /**
      * Closes the add song modal
      */
-    closeAddSongModal() {
+    async closeAddSongModal() {
       this.showAddSongModal = false;
+      // Use nextTick to ensure modal is properly closed
+      await this.$nextTick();
     },
 
     /**
@@ -222,8 +244,13 @@ export default {
      */
     async handleAddSong(songData) {
       try {
+        if (!songData || !songData.playlist) {
+          console.error("Invalid song data received");
+          return;
+        }
+
         await this.createSong(songData);
-        this.closeAddSongModal();
+        await this.closeAddSongModal();
       } catch (error) {
         console.error("Error adding song:", error);
         // TODO: Add user-friendly error notification
@@ -263,7 +290,7 @@ export default {
 
 <style scoped>
 .wrapper-div {
-  margin-top: 5vh;
+  margin-top: 8vh;
 }
 
 .playlist-detail {
@@ -328,8 +355,14 @@ export default {
   white-space: nowrap;
 }
 
-.add-song-btn:hover {
+.add-song-btn:hover:not(:disabled) {
   background: #0056b3;
+}
+
+.add-song-btn:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
 }
 
 .drag-instructions {
@@ -378,6 +411,10 @@ export default {
 }
 
 @media (max-width: 600px) {
+  .wrapper-div {
+    margin-top: 12vh;
+  }
+
   .songs-header {
     flex-direction: column;
     align-items: stretch;

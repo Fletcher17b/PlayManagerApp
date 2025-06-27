@@ -216,8 +216,8 @@ export const songAPI = {
    * @param {string} songData.title - Song title (required)
    * @param {string} songData.artist - Song artist (required)
    * @param {string} [songData.album] - Album name
-   * @param {string} songData.duration - Song duration in mm:ss format (required)
    * @param {string} songData.genre - Song genre (required)
+   * @param {string} songData.duration - Song duration in mm:ss format (required)
    * @returns {Promise<Object>} Promise that resolves to created song data
    * @throws {Error} When API request fails or validation errors
    * @example
@@ -227,8 +227,8 @@ export const songAPI = {
    *     title: 'Bohemian Rhapsody',
    *     artist: 'Queen',
    *     album: 'A Night at the Opera',
-   *     duration: '5:55',
-   *     genre: 'Rock'
+   *     genre: 'Rock',
+   *     duration: '5:55'
    *   });
    *   console.log(newSong.data); // Created song object
    * } catch (error) {
@@ -239,10 +239,15 @@ export const songAPI = {
     if (
       !songData ||
       !songData.playlist ||
+      typeof songData.playlist !== "number" ||
       !songData.title ||
-      !songData.artist
+      !songData.artist ||
+      !songData.genre ||
+      !songData.duration
     ) {
-      throw new Error("Playlist ID, title, and artist are required");
+      throw new Error(
+        "Valid playlist ID (number), title, artist, genre, and duration are required"
+      );
     }
     return api.post("songs/", songData);
   },

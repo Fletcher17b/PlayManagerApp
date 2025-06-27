@@ -19,7 +19,7 @@
 -->
 
 <template>
-  <div class="playlist-card" style="margin: 2vh">
+  <div class="playlist-card" style="margin: 5vh">
     <div class="playlist-content" @click="goToPlaylist">
       <img
         :src="playlist.thumbnail"

@@ -35,7 +35,7 @@
           </label>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="display: none">
           <label class="form-label">
             Thumbnail URL
             <input

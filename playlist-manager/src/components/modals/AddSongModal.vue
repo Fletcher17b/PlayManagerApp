@@ -17,6 +17,7 @@
               required
               class="form-input"
               placeholder="Enter song title"
+              ref="titleInput"
             />
           </label>
         </div>
@@ -62,6 +63,7 @@
             Genre
             <input
               v-model="form.genre"
+              required
               class="form-input"
               placeholder="Enter genre"
             />
@@ -99,16 +101,43 @@ export default {
       },
     };
   },
+  beforeUnmount() {
+    // Clean up any potential issues before component is destroyed
+    this.form = {
+      title: "",
+      artist: "",
+      album: "",
+      duration: "",
+      genre: "",
+    };
+  },
+  mounted() {
+    // Ensure modal is properly initialized
+    this.$nextTick(() => {
+      // Focus the first input for better UX
+      if (this.$refs.titleInput) {
+        this.$refs.titleInput.focus();
+      }
+    });
+  },
   methods: {
     handleSubmit() {
-      const payload = {
-        ...this.form,
-        playlist: this.playlistId,
-      };
-      this.$emit("save", payload);
+      try {
+        const payload = {
+          ...this.form,
+          playlist: parseInt(this.playlistId),
+        };
+        this.$emit("save", payload);
+      } catch (error) {
+        console.error("Error in handleSubmit:", error);
+      }
     },
     close() {
-      this.$emit("close");
+      try {
+        this.$emit("close");
+      } catch (error) {
+        console.error("Error in close:", error);
+      }
     },
   },
 };
@@ -139,7 +168,7 @@ export default {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--shadow-xl);
-  animation: modalSlideIn 0.3s ease-out;
+  /* animation: modalSlideIn 0.3s ease-out; */
 }
 
 .modal-header {
@@ -229,7 +258,7 @@ export default {
   min-width: 100px;
 }
 
-@keyframes modalSlideIn {
+/* @keyframes modalSlideIn {
   from {
     opacity: 0;
     transform: translateY(-20px) scale(0.95);
@@ -238,7 +267,7 @@ export default {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-}
+} */
 
 /* Responsive Design */
 @media (max-width: 640px) {
