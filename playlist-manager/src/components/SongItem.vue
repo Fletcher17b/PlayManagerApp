@@ -28,118 +28,232 @@
 </template>
 
 <script>
+/**
+ * SongItem Component
+ *
+ * Displays individual song information in a card format with drag-and-drop support
+ * and action buttons for editing and deleting songs.
+ *
+ * @component
+ * @example
+ * <SongItem
+ *   :song="{ id: 1, title: 'Bohemian Rhapsody', artist: 'Queen', album: 'A Night at the Opera', duration: '5:55', genre: 'Rock' }"
+ *   :index="0"
+ *   @edit="handleEdit"
+ *   @delete="handleDelete"
+ * />
+ */
 export default {
   name: "SongItem",
   props: {
+    /**
+     * Song data object containing all song information
+     * @type {Object}
+     * @required
+     * @property {number} id - Unique song identifier
+     * @property {string} title - Song title
+     * @property {string} artist - Song artist
+     * @property {string} album - Album name
+     * @property {string} duration - Song duration in mm:ss format
+     * @property {string} genre - Song genre
+     */
     song: {
       type: Object,
       required: true,
+      validator: function (value) {
+        return value && typeof value === "object" && "title" in value;
+      },
     },
+    /**
+     * Position index of the song in the list (used for drag-and-drop ordering)
+     * @type {Number}
+     * @optional
+     */
     index: {
       type: Number,
       required: false,
+      default: 0,
     },
+  },
+  /**
+   * Component events that can be emitted
+   * @emits {edit} - Emitted when edit button is clicked, passes the song object
+   * @emits {delete} - Emitted when delete button is clicked, passes the song ID
+   */
+  emits: ["edit", "delete"],
+  /**
+   * Component lifecycle hook - called when component is mounted
+   */
+  mounted() {
+    // Component is ready for interaction
   },
 };
 </script>
 
 <style scoped>
 .song-card {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1rem;
+  background: var(--bg-card);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-md);
   display: flex;
   flex-direction: column;
   cursor: grab;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--border-primary);
 }
 
 .song-card:active {
   cursor: grabbing;
 }
 
+.song-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  border-color: var(--border-secondary);
+}
+
 .song-header {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   align-items: center;
+  margin-bottom: var(--spacing-md);
 }
 
 .drag-handle {
-  color: #ccc;
-  font-size: 1.2rem;
+  color: var(--text-muted);
+  font-size: var(--font-size-lg);
   cursor: grab;
   user-select: none;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: color 0.2s ease;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
 }
 
 .drag-handle:hover {
-  color: #999;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  transform: scale(1.05);
 }
 
 .song-info {
   flex: 1 1 auto;
+  min-width: 0;
 }
 
 .title {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--text-primary);
+  line-height: 1.3;
 }
 
 .meta {
-  font-size: 0.9rem;
-  color: #666;
-  margin: 0.2rem 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.4;
 }
 
 .genre {
-  font-size: 0.8rem;
-  color: #999;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-weight: 500;
+  background: var(--bg-secondary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  border: 1px solid var(--border-primary);
 }
 
 .duration {
-  font-size: 0.9rem;
-  color: #333;
-  align-self: center;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  background: var(--bg-secondary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-primary);
+  white-space: nowrap;
 }
 
 .song-actions {
-  margin-top: 0.75rem;
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-primary);
 }
 
 .song-actions button {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.85rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .edit-btn {
-  background: #eef6ff;
-  color: #007bff;
+  background: var(--bg-tertiary);
+  color: var(--primary-color);
+  border: 1px solid var(--border-primary);
 }
 
 .edit-btn:hover {
-  background: #d0e8ff;
+  background: var(--primary-color);
+  color: var(--text-inverse);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .delete-btn {
-  background: #ffeeee;
-  color: #cc0000;
+  background: var(--bg-tertiary);
+  color: var(--error-color);
+  border: 1px solid var(--border-primary);
 }
 
 .delete-btn:hover {
-  background: #ffcaca;
+  background: var(--error-color);
+  color: var(--text-inverse);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .song-card {
+    padding: var(--spacing-md);
+  }
+
+  .song-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .duration {
+    align-self: flex-start;
+  }
+
+  .song-actions {
+    flex-direction: column;
+  }
+
+  .song-actions button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

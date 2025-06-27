@@ -1,23 +1,58 @@
 <template>
   <div class="modal-overlay" @click.self="close">
     <div class="modal-content">
-      <h2>{{ isEdit ? "Edit Playlist" : "New Playlist" }}</h2>
-      <form @submit.prevent="handleSubmit">
-        <label>
-          Name:
-          <input v-model="form.name" required />
-        </label>
-        <label>
-          Description:
-          <textarea v-model="form.description" />
-        </label>
-        <label>
-          Thumbnail URL:
-          <input v-model="form.thumbnail" />
-        </label>
+      <div class="modal-header">
+        <h2 class="modal-title">
+          {{ isEdit ? "Edit Playlist" : "New Playlist" }}
+        </h2>
+        <button class="modal-close" @click="close" aria-label="Close modal">
+          ✕
+        </button>
+      </div>
+
+      <form @submit.prevent="handleSubmit" class="modal-form">
+        <div class="form-group">
+          <label class="form-label">
+            Name
+            <input
+              v-model="form.name"
+              required
+              class="form-input"
+              placeholder="Enter playlist name"
+            />
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Description
+            <textarea
+              v-model="form.description"
+              class="form-textarea"
+              placeholder="Enter playlist description"
+              rows="3"
+            />
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Thumbnail URL
+            <input
+              v-model="form.thumbnail"
+              class="form-input"
+              placeholder="https://example.com/image.jpg"
+            />
+          </label>
+        </div>
+
         <div class="modal-actions">
-          <button type="submit">{{ isEdit ? "Update" : "Create" }}</button>
-          <button type="button" @click="close">Cancel</button>
+          <button type="button" @click="close" class="btn btn-secondary">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            {{ isEdit ? "Update" : "Create" }}
+          </button>
         </div>
       </form>
     </div>
@@ -81,42 +116,158 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: var(--z-modal);
+  padding: var(--spacing-md);
 }
 
 .modal-content {
-  background: var(--background-color, white);
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 400px;
+  background: var(--bg-modal);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  max-width: 500px;
   width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  animation: modalSlideIn 0.3s ease-out;
 }
 
-.modal-content h2 {
-  margin-bottom: 1rem;
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--border-primary);
 }
 
-.modal-content label {
+.modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-lg);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal-form {
+  padding: var(--spacing-xl);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
   display: block;
-  margin-bottom: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
 }
 
-.modal-content input,
-.modal-content textarea {
+.form-input,
+.form-textarea {
   width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.25rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--text-muted);
 }
 
 .modal-actions {
   display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-primary);
+}
+
+.modal-actions .btn {
+  min-width: 100px;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: var(--spacing-sm);
+  }
+
+  .modal-content {
+    max-width: none;
+    margin: var(--spacing-sm);
+  }
+
+  .modal-header {
+    padding: var(--spacing-md);
+  }
+
+  .modal-form {
+    padding: var(--spacing-lg);
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+  }
 }
 </style>

@@ -1,7 +1,9 @@
 <template>
-  <div class="loading-spinner">
-    <div class="spinner"></div>
-    <p class="loading-text">{{ text }}</p>
+  <div class="loading-spinner" :class="{ overlay: overlay }">
+    <div class="spinner-container">
+      <div class="spinner"></div>
+      <p v-if="message" class="loading-message">{{ message }}</p>
+    </div>
   </div>
 </template>
 
@@ -9,9 +11,13 @@
 export default {
   name: "LoadingSpinner",
   props: {
-    text: {
+    message: {
       type: String,
       default: "Loading...",
+    },
+    overlay: {
+      type: Boolean,
+      default: false,
     },
   },
 };
@@ -20,26 +26,44 @@ export default {
 <style scoped>
 .loading-spinner {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: var(--spacing-xl);
+}
+
+.loading-spinner.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-modal);
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
 }
 
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
+  border: 3px solid var(--border-primary);
+  border-top: 3px solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
 }
 
-.loading-text {
-  color: #666;
-  font-size: 0.9rem;
+.loading-message {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
   margin: 0;
+  text-align: center;
 }
 
 @keyframes spin {
@@ -49,5 +73,10 @@ export default {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .loading-spinner.overlay {
+  background: rgba(0, 0, 0, 0.7);
 }
 </style>

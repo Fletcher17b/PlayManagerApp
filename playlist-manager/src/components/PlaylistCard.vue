@@ -1,3 +1,23 @@
+<!--
+  Reusable component for displaying individual playlist information.
+  
+  Props:
+  - playlist: Object containing playlist data (id, name, description, etc.)
+  
+  Events:
+  - edit: Emitted when edit button is clicked (passes playlist object)
+  - delete: Emitted when delete button is clicked (passes playlist ID)
+
+  Features:
+  - edit and delete actions
+  - Responsive design 
+  - Displays playlist thumbnail (kinda), title, description, and metadata
+  - Handles click navigation to playlist detail page
+
+    TODO: pretty crude UI, needs more prettifying 
+
+-->
+
 <template>
   <div class="playlist-card" style="margin: 2vh">
     <div class="playlist-content" @click="goToPlaylist">
@@ -57,88 +77,163 @@ export default {
 
 <style scoped>
 .playlist-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  transition: box-shadow 0.2s ease;
+  transition: all var(--transition-normal);
   position: relative;
+  box-shadow: var(--shadow-sm);
 }
 
 .playlist-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--border-secondary);
 }
 
 .playlist-content {
   cursor: pointer;
+  position: relative;
 }
 
 .playlist-image {
   width: 100%;
-  height: 160px;
+  height: 200px;
   object-fit: cover;
+  background: var(--gradient-card);
+  position: relative;
+}
+
+.playlist-image::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  opacity: 0.1;
+  transition: opacity var(--transition-fast);
+}
+
+.playlist-card:hover .playlist-image::before {
+  opacity: 0.2;
 }
 
 .playlist-info {
-  padding: 1rem;
+  padding: var(--spacing-lg);
 }
 
 .playlist-title {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+  line-height: 1.3;
 }
 
 .playlist-description {
-  font-size: 0.95rem;
-  color: #666;
-  margin-bottom: 0.5rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .playlist-meta {
-  font-size: 0.8rem;
-  color: #aaa;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.playlist-meta::before {
+  content: "🎵";
+  font-size: var(--font-size-sm);
 }
 
 .playlist-actions {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border-top: 1px solid #eee;
-  background-color: #f9f9f9;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
 }
 
 .action-btn {
   flex: 1;
-  padding: 0.5rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 0.85rem;
-  transition: background-color 0.2s ease;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
 }
 
 .edit-btn {
-  background-color: #e3f2fd;
-  color: #1976d2;
+  background: var(--bg-tertiary);
+  color: var(--primary-color);
+  border: 1px solid var(--border-primary);
 }
 
 .edit-btn:hover {
-  background-color: #bbdefb;
+  background: var(--primary-color);
+  color: var(--text-inverse);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .delete-btn {
-  background-color: #ffebee;
-  color: #d32f2f;
+  background: var(--bg-tertiary);
+  color: var(--error-color);
+  border: 1px solid var(--border-primary);
 }
 
 .delete-btn:hover {
-  background-color: #ffcdd2;
+  background: var(--error-color);
+  color: var(--text-inverse);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
+/* Responsive Design */
 @media (min-width: 768px) {
   .playlist-card {
-    width: 50vw;
+    max-width: none;
+  }
+
+  .playlist-image {
+    height: 180px;
+  }
+}
+
+@media (max-width: 640px) {
+  .playlist-info {
+    padding: var(--spacing-md);
+  }
+
+  .playlist-actions {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .action-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
   }
 }
 </style>

@@ -1,3 +1,9 @@
+/*
+ * router/index.js
+ * Configures Vue Router for the Playlist Manager app.
+ * Defines routes for Home, Dashboard, and Playlist Detail views.
+ */
+
 import { createRouter, createWebHistory } from "vue-router";
 
 // Route-level code splitting for better performance
@@ -5,7 +11,7 @@ const Home = () => import("../views/Home.vue");
 const Dashboard = () => import("@/views/Dashboard.vue");
 const Playlist = () => import("../views/Playlist.vue");
 
-// Auth not implemented
+// Define the application's routes, Auth not implemented
 const routes = [
   {
     path: "/",
@@ -51,8 +57,8 @@ const router = createRouter({
 
   routes,
 
+  // Return to saved position or scroll to top
   scrollBehavior(to, from, savedPosition) {
-    // Return to saved position or scroll to top
     return savedPosition || { top: 0 };
   },
 });

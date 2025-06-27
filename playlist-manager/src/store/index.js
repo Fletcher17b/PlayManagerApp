@@ -16,6 +16,11 @@ export default createStore({
     setTheme(state, theme) {
       state.theme = theme;
       localStorage.setItem(THEME_KEY, theme);
+
+      // Set data attribute on html element for CSS custom properties
+      document.documentElement.setAttribute("data-theme", theme);
+
+      //backward compatibility for old implementation
       document.body.classList.toggle("dark-mode", theme === "dark");
     },
   },
@@ -24,8 +29,9 @@ export default createStore({
       const newTheme = state.theme === "light" ? "dark" : "light";
       commit("setTheme", newTheme);
     },
-    initializeTheme({ /*  commit, */ state }) {
-      document.body.classList.toggle("dark-mode", state.theme === "dark");
+    initializeTheme({ commit, state }) {
+      // Set initial theme
+      commit("setTheme", state.theme);
     },
   },
   modules: {
