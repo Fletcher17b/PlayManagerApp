@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# Things changed: 
+# Added Cors headers, music and rest framework
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,8 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
+    'music',
+    
 ]
 
+# Things changed: 
+#  added corsheaders middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -47,8 +55,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
+# this 
+CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'djangoAPI.urls'
 
 TEMPLATES = [
